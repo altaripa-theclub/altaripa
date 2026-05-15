@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- ══ SEO ══ -->
+  <title>Altaripa The Club — Serate Desenzano del Garda</title>
+  <meta name="description" content="Altaripa The Club, Desenzano del Garda. Scopri le serate della settimana, iscriviti in lista e prenota il tuo tavolo." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://altaripa.github.io/altaripa/" />
+
+  <!-- ══ OPEN GRAPH (anteprima WhatsApp / Instagram / Facebook) ══ -->
+  <meta property="og:type"        content="website" />
+  <meta property="og:url"         content="https://altaripa.github.io/altaripa/" />
+  <meta property="og:title"       content="Altaripa The Club — Serate Desenzano del Garda" />
+  <meta property="og:description" content="Le serate della settimana: lista ingresso, prenotazione tavoli, aperitivo fronte lago." />
+  <meta property="og:image"       content="https://altaripa.github.io/altaripa/assets/og-image.jpg" />
+  <meta property="og:locale"      content="it_IT" />
+  <meta name="twitter:card"       content="summary_large_image" />
+
+  <!-- ══ FAVICON ══ -->
+  <link rel="icon" type="image/png" href="assets/favicon.png" />
+  <link rel="shortcut icon" href="assets/favicon.ico" />
+  <link rel="apple-touch-icon" href="assets/favicon.png" />
+
+  <!-- ══ FONT ══ -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;300;400;500&display=swap" rel="stylesheet" />
+
+  <!-- ══ PERFORMANCE: preload logo ══ -->
+  <link rel="preload" href="assets/logo.png" as="image" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* ── DESIGN TOKENS ──
+       Centralizzati: modifica qui per cambiare tutto il sito. */
+    :root {
+      --bg-primary:        #154d55;
+      --bg-gradient:       linear-gradient(160deg, #1a5f69 0%, #154d55 50%, #0f3a40 100%);
+      --bg-surface:        rgba(255,255,255,0.06);
+      --bg-surface-2:      rgba(255,255,255,0.04);
+      --color-white:       #ffffff;
+      --color-muted:       rgba(255,255,255,0.45);
+      --color-border:      rgba(255,255,255,0.12);
+      --color-border-hover:rgba(255,255,255,0.35);
+      --btn-primary-bg:    #ffffff;
+      --btn-primary-text:  #154d55;
+      --font-body:         'Montserrat', sans-serif;
+      --radius-card:       6px;
+      --radius-btn:        3px;
+      --transition:        0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background-color: var(--bg-primary);
+      background-image: var(--bg-gradient);
+      color: var(--color-white);
+      font-family: var(--font-body);
+      font-weight: 300;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    /* ── SKIP LINK accessibilità ── */
+    .skip-link {
+      position: absolute;
+      top: -40px;
+      left: 0;
+      background: var(--color-white);
+      color: var(--bg-primary);
+      padding: 8px 16px;
+      font-size: 12px;
+      z-index: 9999;
+      transition: top 0.2s;
+    }
+    .skip-link:focus { top: 0; }
+
+    /* ── LANG TOGGLE ── */
+    #lang-toggle {
+      position: fixed;
+      top: 14px;
+      left: 14px;
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 13px;
+      background: rgba(10, 42, 47, 0.88);
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: var(--radius-btn);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      color: rgba(255,255,255,0.75);
+      font-family: var(--font-body);
+      font-size: 10px;
+      font-weight: 400;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background var(--transition), border-color var(--transition), color var(--transition);
+    }
+    #lang-toggle:hover {
+      background: rgba(255,255,255,0.1);
+      border-color: rgba(255,255,255,0.4);
+      color: var(--color-white);
+    }
+    #lang-toggle:focus-visible { outline: 2px solid var(--color-white); outline-offset: 2px; }
+    #lang-toggle svg { width: 12px; height: 12px; flex-shrink: 0; opacity: 0.6; }
+    #lang-toggle .current-lang {
+      font-weight: 500;
+      color: rgba(255,255,255,0.5);
+      font-size: 9px;
+      letter-spacing: 0.15em;
+    }
+
+    /* ── RESTAURANT BUTTON ── */
+    #ristorante-btn {
+      position: fixed;
+      top: 50px;
+      left: 14px;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 13px;
+      background: rgba(10, 42, 47, 0.88);
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: var(--radius-btn);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      color: rgba(255,255,255,0.75);
+      font-family: var(--font-body);
+      font-size: 10px;
+      font-weight: 400;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      text-decoration: none;
+      transition: background var(--transition), border-color var(--transition), color var(--transition);
+    }
+    #ristorante-btn:hover {
+      background: rgba(255,255,255,0.1);
+      border-color: rgba(255,255,255,0.4);
+      color: var(--color-white);
+    }
+    #ristorante-btn:focus-visible { outline: 2px solid var(--color-white); outline-offset: 2px; }
+    #ristorante-btn svg { width: 12px; height: 12px; flex-shrink: 0; opacity: 0.6; }
+
+    /* ── LANGUAGE MODAL ── */
+    #lang-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(8, 35, 38, 0.92);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      opacity: 1;
+      transition: opacity 0.4s ease;
+    }
+    #lang-overlay.hidden { opacity: 0; pointer-events: none; }
+    #lang-modal {
+      background: var(--bg-primary);
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: 8px;
+      padding: 44px 36px 36px;
+      text-align: center;
+      max-width: 340px;
+      width: calc(100% - 40px);
+      transform: translateY(0);
+      transition: transform 0.4s ease;
+    }
+    #lang-overlay.hidden #lang-modal { transform: translateY(12px); }
+    #lang-modal .modal-eyebrow {
+      font-size: 10px;
+      font-weight: 300;
+      letter-spacing: 0.35em;
+      color: rgba(255,255,255,0.38);
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    #lang-modal h2 {
+      font-size: 19px;
+      font-weight: 300;
+      letter-spacing: 0.1em;
+      color: var(--color-white);
+      margin-bottom: 28px;
+      line-height: 1.3;
+    }
+    .lang-btn-group { display: flex; flex-direction: column; gap: 9px; }
+    .lang-btn {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      padding: 13px 18px;
+      border-radius: var(--radius-btn);
+      border: 1px solid rgba(255,255,255,0.18);
+      background: transparent;
+      color: var(--color-white);
+      font-family: var(--font-body);
+      font-size: 11px;
+      font-weight: 400;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
+    }
+    .lang-btn:hover { background: rgba(255,255,255,0.09); border-color: rgba(255,255,255,0.45); }
+    .lang-btn:active { transform: scale(0.98); }
+    .lang-btn:focus-visible { outline: 2px solid var(--color-white); outline-offset: 2px; }
+    .lang-btn .lang-native { font-weight: 300; font-size: 11px; color: rgba(255,255,255,0.4); }
+
+    /* ── LIGHTBOX ── */
+    #lightbox {
+      position: fixed;
+      inset: 0;
+      z-index: 8000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(5, 28, 32, 0.97);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    #lightbox.active { opacity: 1; pointer-events: all; }
+    #lightbox img {
+      max-width: min(90vw, 500px);
+      max-height: 90vh;
+      object-fit: contain;
+      border-radius: var(--radius-card);
+      transform: scale(0.93);
+      transition: transform 0.35s cubic-bezier(0.34, 1.4, 0.64, 1);
+      box-shadow: 0 32px 80px rgba(0,0,0,0.7);
+    }
+    #lightbox.active img { transform: scale(1); }
+    #lightbox-close {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: var(--color-white);
+      font-size: 16px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s ease;
+      font-family: var(--font-body);
+    }
+    #lightbox-close:hover { background: rgba(255,255,255,0.2); }
+    #lightbox-close:focus-visible { outline: 2px solid var(--color-white); outline-offset: 2px; }
+
+    /* ── HEADER ── */
+    header {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 28px 20px 16px;
+    }
+    header::after {
+      content: '';
+      display: block;
+      width: 1px;
+      height: 26px;
+      background: linear-gradient(to bottom, rgba(255,255,255,0.22), transparent);
+      margin: 12px auto 0;
+    }
+    .logo-wrap { width: min(280px, 65vw); }
+    .logo-wrap img { width: 100%; height: auto; display: block; }
+    .tagline {
+      font-size: 10px;
+      font-weight: 300;
+      letter-spacing: 0.38em;
+      color: rgba(255,255,255,0.45);
+      text-transform: uppercase;
+      margin-top: 10px;
+    }
+
+    /* ── WEEK LABEL ── */
+    .week-label {
+      text-align: center;
+      padding: 0 16px 16px;
+      margin-top: -4px;
+    }
+    .week-label h1 {
+      font-size: clamp(15px, 4.2vw, 30px);
+      font-weight: 300;
+      letter-spacing: 0.18em;
+      color: var(--color-white);
+      line-height: 1.1;
+      text-transform: uppercase;
+    }
+    .week-label p {
+      font-size: 10px;
+      font-weight: 300;
+      letter-spacing: 0.28em;
+      color: rgba(255,255,255,0.5);
+      text-transform: uppercase;
+      margin-top: 7px;
+    }
+
+    /* ── MAIN ── */
+    main {
+      flex: 1;
+      width: 100%;
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 12px 48px;
+    }
+
+    /* ── GRID: sempre 2 colonne ── */
+    .events-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+    @media (max-width: 380px) { .events-grid { gap: 8px; } }
+
+    /* ── CARD ── */
+    .event-card {
+      display: flex;
+      flex-direction: column;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-card);
+      overflow: hidden;
+      background: var(--bg-surface);
+      transition: border-color var(--transition), transform var(--transition), box-shadow var(--transition);
+    }
+    .event-card:hover {
+      border-color: var(--color-border-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.22);
+    }
+
+    /* ── FLYER ── */
+    .flyer-wrap {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 4 / 5;
+      background: var(--bg-surface-2);
+      overflow: hidden;
+      cursor: zoom-in;
+    }
+    .flyer-wrap img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .flyer-placeholder {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      opacity: 0.3;
+    }
+    .flyer-placeholder svg { width: 40px; height: 40px; stroke: var(--color-white); fill: none; stroke-width: 1; }
+    .flyer-placeholder span { font-size: 9px; letter-spacing: 0.2em; color: var(--color-white); text-transform: uppercase; }
+
+    /* ── DAY BADGE ── */
+    .day-badge {
+      position: absolute;
+      top: 9px;
+      left: 9px;
+      background: rgba(8, 38, 42, 0.82);
+      border: 1px solid rgba(255,255,255,0.28);
+      border-radius: 2px;
+      padding: 3px 8px;
+      font-size: 9px;
+      font-weight: 400;
+      letter-spacing: 0.2em;
+      color: rgba(255,255,255,0.9);
+      text-transform: uppercase;
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+    }
+
+    /* ── BUTTONS ── */
+    .card-cta {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      padding: 10px 10px 12px;
+    }
+    .btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      width: 100%;
+      padding: 10px 8px;
+      border-radius: var(--radius-btn);
+      font-family: var(--font-body);
+      font-size: 9px;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      text-decoration: none;
+      cursor: pointer;
+      border: none;
+      outline: none;
+      transition: background var(--transition), color var(--transition),
+                  border-color var(--transition), transform 0.15s ease;
+    }
+    .btn:active { transform: scale(0.97); }
+    .btn:focus-visible { outline: 2px solid var(--color-white); outline-offset: 2px; }
+    @media (min-width: 600px) {
+      .btn { font-size: 10px; padding: 11px 12px; letter-spacing: 0.22em; }
+    }
+    .btn svg { width: 11px; height: 11px; flex-shrink: 0; }
+    .btn-lista { background: var(--btn-primary-bg); color: var(--btn-primary-text); }
+    .btn-lista:hover { background: rgba(255,255,255,0.88); }
+    .btn-tavolo { background: transparent; color: var(--color-white); border: 1px solid rgba(255,255,255,0.3); }
+    .btn-tavolo:hover { background: rgba(255,255,255,0.09); border-color: rgba(255,255,255,0.6); }
+
+    /* ── APERITIVO STRIP ── */
+    .aperitivo-strip {
+      text-align: center;
+      padding: 22px 20px 6px;
+      font-size: 11px;
+      font-weight: 300;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.55);
+      line-height: 1.9;
+    }
+    .aperitivo-strip strong { color: var(--color-white); font-weight: 500; letter-spacing: 0.22em; }
+
+    /* ── FOOTER ── */
+    footer { border-top: 1px solid var(--color-border); padding: 24px 20px; text-align: center; }
+    .footer-sep { width: 1px; height: 22px; background: rgba(255,255,255,0.12); margin: 0 auto 18px; }
+    .footer-contact { font-size: 10px; font-weight: 300; letter-spacing: 0.15em; color: rgba(255,255,255,0.5); margin-bottom: 8px; }
+    .footer-contact a { color: var(--color-white); text-decoration: none; transition: opacity var(--transition); }
+    .footer-contact a:hover { opacity: 0.7; }
+    .footer-info { font-size: 9px; font-weight: 300; letter-spacing: 0.18em; color: rgba(255,255,255,0.38); line-height: 2; text-transform: uppercase; }
+  </style>
+</head>
+<body>
+
+  <a class="skip-link" href="#main-content">Vai al contenuto</a>
+
+  <!-- ══ LANG TOGGLE ══ -->
+  <button id="lang-toggle" onclick="reopenLangModal()" aria-label="Cambia lingua">
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="8" cy="8" r="6.5"/>
+      <path d="M8 1.5C8 1.5 5.5 4 5.5 8s2.5 6.5 2.5 6.5"/>
+      <path d="M8 1.5C8 1.5 10.5 4 10.5 8s-2.5 6.5-2.5 6.5"/>
+      <line x1="1.5" y1="8" x2="14.5" y2="8"/>
+      <line x1="2" y1="5" x2="14" y2="5"/>
+      <line x1="2" y1="11" x2="14" y2="11"/>
+    </svg>
+    <span id="toggle-label">Lingua</span>
+    <span class="current-lang" id="toggle-lang-code"></span>
+  </button>
+
+  <!-- ══ RISTORANTE BUTTON ══ -->
+  <a href="ristorante.html" id="ristorante-btn" aria-label="Vai al ristorante">
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2" xmlns="http://www.w3.org/2000/svg">
+      <path d="M3 3c0 3 1 5 5 5s5-2 5-5"/>
+      <line x1="8" y1="8" x2="8" y2="14"/>
+      <line x1="5" y1="14" x2="11" y2="14"/>
+    </svg>
+    Ristorante
+  </a>
+
+  <!-- ══ LIGHTBOX ══ -->
+  <div id="lightbox" role="dialog" aria-modal="true" aria-label="Locandina ingrandita">
+    <button id="lightbox-close" onclick="closeLightbox()" aria-label="Chiudi">✕</button>
+    <img id="lightbox-img" src="" alt="Locandina serata" />
+  </div>
+
+  <!-- ══ LANGUAGE PICKER ══ -->
+  <div id="lang-overlay" role="dialog" aria-modal="true" aria-labelledby="lang-title">
+    <div id="lang-modal">
+      <p class="modal-eyebrow">Altaripa The Club</p>
+      <h2 id="lang-title">Select your language</h2>
+      <div class="lang-btn-group">
+        <button class="lang-btn" onclick="setLang('it')"><span>Italiano</span><span class="lang-native">IT</span></button>
+        <button class="lang-btn" onclick="setLang('en')"><span>English</span><span class="lang-native">EN</span></button>
+        <button class="lang-btn" onclick="setLang('de')"><span>Deutsch</span><span class="lang-native">DE</span></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ HEADER ══ -->
+  <header role="banner">
+    <div class="logo-wrap">
+      <img src="assets/logo.png" alt="Altaripa The Club" width="280" height="107" />
+    </div>
+    <p class="tagline">Desenzano del Garda</p>
+  </header>
+
+  <!-- ══ WEEK TITLE ══ -->
+  <div class="week-label">
+    <h1 id="week-title">Le serate della settimana</h1>
+    <p id="week-range" aria-live="polite">— — —</p>
+  </div>
+
+  <!-- ══ EVENTS ══ -->
+  <main id="main-content">
+    <div class="events-grid" role="list">
+
+      <!-- CARD 1 — GIOVEDÌ
+           Aggiornamento settimanale:
+           1. Rinomina il nuovo flyer giovedi.jpg e caricalo in events/
+           2. Aggiorna ?v=YYYYMMDD per forzare il refresh del browser
+           3. Aggiorna alt= con nome serata e data
+           4. Aggiorna href del btn-lista con il link lista della settimana -->
+      <article class="event-card" role="listitem">
+        <div class="flyer-wrap"
+             onclick="openLightbox('events/giovedi.jpg?v=20260420')"
+             role="button" tabindex="0"
+             aria-label="Ingrandisci locandina giovedì">
+          <img src="events/giovedi.jpg?v=20260420"
+               alt="Trapical - Giovedì 16 Aprile"
+               id="img-1"
+               loading="lazy"
+               onerror="this.style.display='none';document.getElementById('ph-1').style.display='flex'" />
+          <div class="flyer-placeholder" id="ph-1" style="display:none" aria-hidden="true">
+            <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><rect x="4" y="4" width="40" height="40" rx="2"/><line x1="4" y1="4" x2="44" y2="44"/><line x1="44" y1="4" x2="4" y2="44"/></svg>
+            <span>Locandina non disponibile</span>
+          </div>
+          <span class="day-badge" data-day-index="3">Giovedì</span>
+        </div>
+        <div class="card-cta">
+          <a href="lista.html" class="btn btn-lista" target="_blank" rel="noopener">
+            <svg viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M8 1a7 7 0 1 0 0 14A7 7 0 0 0 8 1zm.5 3.5v3.25l2.5 1.5-.75 1.25-3-1.75V4.5h1.25z"/></svg>
+            <span class="btn-label">Iscriviti in lista</span>
+          </a>
+          <a href="https://wa.me/message/OP6XDBXXT7TGB1" class="btn btn-tavolo" target="_blank" rel="noopener">
+            <svg viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M8 1C4.134 1 1 4.134 1 8c0 1.295.35 2.508.958 3.548L1 15l3.548-.958A6.963 6.963 0 0 0 8 15c3.866 0 7-3.134 7-7S11.866 1 8 1zm3.5 9.5c-.167.458-1.042.875-1.417.917-.375.042-.767.208-2.583-.583C5.833 10 4.917 8.333 4.833 8.208c-.083-.125-.667-.875-.667-1.667S4.667 5.5 4.875 5.25c.208-.25.417-.25.583-.25h.5c.167 0 .375.042.542.417l.708 1.583c.083.208.042.458-.083.583l-.292.333c-.083.125-.167.25-.042.5.125.25.583 1 1.25 1.625.833.75 1.5.958 1.708 1.042.208.083.333.042.458-.083l.417-.5c.167-.208.375-.167.625-.083l1.5.708c.25.125.417.208.417.458 0 .25-.167.708-.333 1.167z"/></svg>
+            <span class="btn-label">Prenota il tuo tavolo</span>
+          </a>
+        </div>
+      </article>
+
+      <!-- CARD 2 — VENERDÌ -->
+      <article class="event-card" role="listitem">
+        <div class="flyer-wrap"
+             onclick="openLightbox('events/venerdi.jpg?v=20260420')"
+             role="button" tabindex="0"
+             aria-label="Ingrandisci locandina venerdì">
+          <img src="events/venerdi.jpg?v=20260420"
+               alt="Mi Casa Winter Closing Party - Venerdì 17 Aprile"
+               id="img-2"
+               loading="lazy"
+               onerror="this.style.display='none';document.getElementById('ph-2').style.display='flex'" />
+          <div class="flyer-placeholder" id="ph-2" style="display:none" aria-hidden="true">
+            <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><rect x="4" y="4" width="40" height="40" rx="2"/><line x1="4" y1="4" x2="44" y2="44"/><line x1="44" y1="4" x2="4" y2="44"/></svg>
+            <span>Locandina non disponibile</span>
+          </div>
+          <span class="day-badge" data-day-index="4">Venerdì</span>
+        </div>
+        <div class="card-cta">
+          <a href="lista.html" class="btn btn-lista" target="_blank" rel="noopener">
+            <svg viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M8 1a7 7 0 1 0 0 14A7 7 0 0 0 8 1zm.5 3.5v3.25l2.5 1.5-.75 1.25-3-1.75V4.5h1.25z"/></svg>
+            <span class="btn-label">Iscriviti in lista</span>
+          </a>
+          <a href="https://wa.me/message/OP6XDBXXT7TGB1" class="btn btn-tavolo" target="_blank" rel="noopener">
+            <svg viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M8 1C4.134 1 1 4.134 1 8c0 1.295.35 2.508.958 3.548L1 15l3.548-.958A6.963 6.963 0 0 0 8 15c3.866 0 7-3.134 7-7S11.866 1 8 1zm3.5 9.5c-.167.458-1.042.875-1.417.917-.375.042-.767.208-2.583-.583C5.833 10 4.917 8.333 4.833 8.208c-.083-.125-.667-.875-.667-1.667S4.667 5.5 4.875 5.25c.208-.25.417-.25.583-.25h.5c.167 0 .375.042.542.417l.708 1.583c.083.208.042.458-.083.583l-.292.333c-.083.125-.167.25-.042.5.125.25.583 1 1.25 1.625.833.75 1.5.958 1.708 1.042.208.083.333.042.458-.083l.417-.5c.167-.208.375-.167.625-.083l1.5.708c.25.125.417.208.417.458 0 .25-.167.708-.333 1.167z"/></svg>
+            <span class="btn-label">Prenota il tuo tavolo</span>
+          </a>
+        </div>
+      </article>
+
+      <!-- CARD 3 — SABATO -->
+      <article class="event-card" role="listitem">
+        <div class="flyer-wrap"
+             onclick="openLightbox('events/sabato.jpg?v=20260420')"
+             role="button" tabindex="0"
+             aria-label="Ingrandisci locandina sabato">
+          <img src="events/sabato.jpg?v=20260420"
+               alt="Secret & Fukksleep - Sabato 18 Aprile"
+               id="img-3"
+               loading="lazy"
+               onerror="this.style.display='none';document.getElementById('ph-3').style.display='flex'" />
+          <div class="flyer-placeholder" id="ph-3" style="display:none" aria-hidden="true">
+            <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><rect x="4" y="4" width="40" height="40" rx="2"/><line x1="4" y1="4" x2="44" y2="44"/><line x1="44" y1="4" x2="4" y2="44"/></svg>
+            <span>Locandina non disponibile</span>
+          </div>
+          <span class="day-badge" data-day-index="5">Sabato</span>
+        </div>
+        <div class="card-cta">
+          <a href="https://fienta.com/it/ingresso-ridotto" class="btn btn-lista" target="_blank" rel="noopener">
+            <svg viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M8 1a7 7 0 1 0 0 14A7 7 0 0 0 8 1zm.5 3.5v3.25l2.5 1.5-.75 1.25-3-1.75V4.5h1.25z"/></svg>
+            <span class="btn-label">Iscriviti in lista</span>
+          </a>
+          <a href="https://wa.me/message/OP6XDBXXT7TGB1" class="btn btn-tavolo" target="_blank" rel="noopener">
+            <svg viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M8 1C4.134 1 1 4.134 1 8c0 1.295.35 2.508.958 3.548L1 15l3.548-.958A6.963 6.963 0 0 0 8 15c3.866 0 7-3.134 7-7S11.866 1 8 1zm3.5 9.5c-.167.458-1.042.875-1.417.917-.375.042-.767.208-2.583-.583C5.833 10 4.917 8.333 4.833 8.208c-.083-.125-.667-.875-.667-1.667S4.667 5.5 4.875 5.25c.208-.25.417-.25.583-.25h.5c.167 0 .375.042.542.417l.708 1.583c.083.208.042.458-.083.583l-.292.333c-.083.125-.167.25-.042.5.125.25.583 1 1.25 1.625.833.75 1.5.958 1.708 1.042.208.083.333.042.458-.083l.417-.5c.167-.208.375-.167.625-.083l1.5.708c.25.125.417.208.417.458 0 .25-.167.708-.333 1.167z"/></svg>
+            <span class="btn-label">Prenota il tuo tavolo</span>
+          </a>
+        </div>
+      </article>
+
+      <!-- CARD 4 — DOMENICA -->
+      <article class="event-card" role="listitem">
+        <div class="flyer-wrap"
+             onclick="openLightbox('events/domenica.jpg?v=20260420')"
+             role="button" tabindex="0"
+             aria-label="Ingrandisci locandina domenica">
+          <img src="events/domenica.jpg?v=20260420"
+               alt="Bacon Air Morning Club - Domenica"
+               id="img-4"
+               loading="lazy"
+               onerror="this.style.display='none';document.getElementById('ph-4').style.display='flex'" />
+          <div class="flyer-placeholder" id="ph-4" style="display:none" aria-hidden="true">
+            <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><rect x="4" y="4" width="40" height="40" rx="2"/><line x1="4" y1="4" x2="44" y2="44"/><line x1="44" y1="4" x2="4" y2="44"/></svg>
+            <span>Locandina non disponibile</span>
+          </div>
+          <span class="day-badge" data-day-index="6">Domenica</span>
+        </div>
+        <div class="card-cta">
+          <a href="lista.html" class="btn btn-lista" target="_blank" rel="noopener">
+            <svg viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M8 1a7 7 0 1 0 0 14A7 7 0 0 0 8 1zm.5 3.5v3.25l2.5 1.5-.75 1.25-3-1.75V4.5h1.25z"/></svg>
+            <span class="btn-label">Iscriviti in lista</span>
+          </a>
+          <a href="https://wa.me/message/OP6XDBXXT7TGB1" class="btn btn-tavolo" target="_blank" rel="noopener">
+            <svg viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M8 1C4.134 1 1 4.134 1 8c0 1.295.35 2.508.958 3.548L1 15l3.548-.958A6.963 6.963 0 0 0 8 15c3.866 0 7-3.134 7-7S11.866 1 8 1zm3.5 9.5c-.167.458-1.042.875-1.417.917-.375.042-.767.208-2.583-.583C5.833 10 4.917 8.333 4.833 8.208c-.083-.125-.667-.875-.667-1.667S4.667 5.5 4.875 5.25c.208-.25.417-.25.583-.25h.5c.167 0 .375.042.542.417l.708 1.583c.083.208.042.458-.083.583l-.292.333c-.083.125-.167.25-.042.5.125.25.583 1 1.25 1.625.833.75 1.5.958 1.708 1.042.208.083.333.042.458-.083l.417-.5c.167-.208.375-.167.625-.083l1.5.708c.25.125.417.208.417.458 0 .25-.167.708-.333 1.167z"/></svg>
+            <span class="btn-label">Prenota il tuo tavolo</span>
+          </a>
+        </div>
+      </article>
+
+    </div><!-- /events-grid -->
+
+    <!-- ══ APERITIVO STRIP ══ -->
+    <div class="aperitivo-strip">
+      <strong>Aperitivo fronte lago</strong><br/>
+      dal Mercoledì alla Domenica &nbsp;·&nbsp; dalle 18:00
+    </div>
+
+  </main>
+
+  <!-- ══ FOOTER ══ -->
+  <footer role="contentinfo">
+    <div class="footer-sep" aria-hidden="true"></div>
+    <p class="footer-contact">
+      <span id="footer-info-label">Per informazioni:</span>
+      <a href="https://wa.me/message/OP6XDBXXT7TGB1" aria-label="Contattaci su WhatsApp">347 332 6512</a>
+    </p>
+    <p class="footer-info">
+      Altaripa srl &nbsp;·&nbsp; Viale F. Agello 152 &nbsp;·&nbsp; 25015 Desenzano del Garda<br/>
+      P.I. 04254570981
+    </p>
+  </footer>
+
+  <script>
+    'use strict';
+
+    /* ══ CONFIG CENTRALIZZATA
+       Unico posto dove cambiare link WhatsApp e cache version. ══ */
+    var CONFIG = {
+      waLink:    'https://wa.me/message/OP6XDBXXT7TGB1',
+      cacheBust: '20260420'  /* ← aggiorna ogni settimana: YYYYMMDD */
+    };
+
+    /* ══ WEEK RANGE AUTO ══ */
+    (function() {
+      var now    = new Date();
+      var day    = now.getDay();
+      var monday = new Date(now);
+      monday.setDate(now.getDate() - ((day + 6) % 7));
+      var sunday = new Date(monday);
+      sunday.setDate(monday.getDate() + 6);
+      var fmt = function(d) {
+        return d.toLocaleDateString('it-IT', { day: 'numeric', month: 'long' });
+      };
+      var el = document.getElementById('week-range');
+      if (el) el.textContent = fmt(monday) + ' — ' + fmt(sunday);
+    }());
+
+    /* ══ TRANSLATIONS ══ */
+    var T = {
+      it: {
+        weekTitle: 'Le serate della settimana',
+        joinList:  'Iscriviti in lista',
+        bookTable: 'Prenota il tuo tavolo',
+        forInfo:   'Per informazioni:',
+        days: ['Lunedì','Martedì','Mercoledì','Giovedì','Venerdì','Sabato','Domenica']
+      },
+      en: {
+        weekTitle: 'Events this week',
+        joinList:  'Join the guest list',
+        bookTable: 'Reserve your table',
+        forInfo:   'For information:',
+        days: ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday']
+      },
+      de: {
+        weekTitle: 'Veranstaltungen der Woche',
+        joinList:  'Auf die Gästeliste',
+        bookTable: 'Tisch reservieren',
+        forInfo:   'Für Informationen:',
+        days: ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag']
+      }
+    };
+
+    function setLang(lang) {
+      /* Whitelist: rifiuta qualsiasi valore non previsto */
+      if (!Object.prototype.hasOwnProperty.call(T, lang)) return;
+      var t = T[lang];
+
+      /* localStorage: persiste tra sessioni, sopravvive alla chiusura del tab */
+      try { localStorage.setItem('altaripa_lang', lang); } catch(e) {}
+
+      /* Aggiorna lang attribute: SEO + screen reader */
+      document.documentElement.lang = lang;
+
+      var wt = document.getElementById('week-title');
+      if (wt) wt.textContent = t.weekTitle;
+
+      document.querySelectorAll('[data-day-index]').forEach(function(el) {
+        var idx = parseInt(el.getAttribute('data-day-index'), 10);
+        if (!isNaN(idx) && idx >= 0 && idx <= 6) el.textContent = t.days[idx];
+      });
+
+      document.querySelectorAll('.btn-lista .btn-label').forEach(function(el) { el.textContent = t.joinList; });
+      document.querySelectorAll('.btn-tavolo .btn-label').forEach(function(el) { el.textContent = t.bookTable; });
+
+      var fi = document.getElementById('footer-info-label');
+      if (fi) fi.textContent = t.forInfo;
+
+      var labels = { it: 'Lingua', en: 'Language', de: 'Sprache' };
+      var codes  = { it: 'IT', en: 'EN', de: 'DE' };
+      var tb = document.getElementById('lang-toggle');
+      var tl = document.getElementById('toggle-label');
+      var tc = document.getElementById('toggle-lang-code');
+      if (tl) tl.textContent = labels[lang];
+      if (tc) tc.textContent = codes[lang];
+      if (tb) tb.style.display = 'flex';
+
+      var overlay = document.getElementById('lang-overlay');
+      if (overlay) {
+        overlay.classList.add('hidden');
+        setTimeout(function() { overlay.style.display = 'none'; }, 420);
+      }
+    }
+
+    function reopenLangModal() {
+      var overlay = document.getElementById('lang-overlay');
+      if (!overlay) return;
+      overlay.style.display = 'flex';
+      requestAnimationFrame(function() {
+        requestAnimationFrame(function() { overlay.classList.remove('hidden'); });
+      });
+    }
+
+    /* Ripristina lingua da localStorage */
+    (function() {
+      try {
+        var saved = localStorage.getItem('altaripa_lang');
+        if (saved && Object.prototype.hasOwnProperty.call(T, saved)) {
+          setLang(saved);
+          return;
+        }
+      } catch(e) {}
+      /* Nessuna lingua salvata: modale già visibile */
+    }());
+
+    /* ══ LIGHTBOX ══ */
+    function openLightbox(src) {
+      /* Sicurezza: accetta solo path nella cartella events/ */
+      if (typeof src !== 'string' || src.indexOf('events/') !== 0) return;
+      var lb  = document.getElementById('lightbox');
+      var img = document.getElementById('lightbox-img');
+      if (!lb || !img) return;
+      img.src = src;
+      lb.classList.add('active');
+      document.body.style.overflow = 'hidden';
+      /* Focus trap: porta il focus sul bottone chiudi */
+      var closeBtn = document.getElementById('lightbox-close');
+      if (closeBtn) setTimeout(function() { closeBtn.focus(); }, 50);
+    }
+
+    function closeLightbox() {
+      var lb = document.getElementById('lightbox');
+      if (!lb) return;
+      lb.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    document.getElementById('lightbox').addEventListener('click', function(e) {
+      if (e.target === this) closeLightbox();
+    });
+
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') closeLightbox();
+    });
+
+    /* Tastiera: apri lightbox con Enter o Spazio */
+    document.querySelectorAll('.flyer-wrap[tabindex]').forEach(function(wrap) {
+      wrap.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); wrap.click(); }
+      });
+    });
+
+  </script>
+
+</body>
+</html>
