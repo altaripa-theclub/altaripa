@@ -264,7 +264,85 @@
     .footer-contact { font-size: 10px; font-weight: 300; letter-spacing: 0.15em; color: rgba(255,255,255,0.5); margin-bottom: 8px; }
     .footer-contact a { color: var(--color-white); text-decoration: none; }
     .footer-contact a:hover { opacity: 0.7; }
-    .footer-info { font-size: 9px; font-weight: 300; letter-spacing: 0.18em; color: rgba(255,255,255,0.38); line-height: 2; text-transform: uppercase; }
+    .footer-info { font-size: 9px; font-weight: 300; letter-spacing: 0.18em; color: rgba(255,255,255,0.5); line-height: 2; text-transform: uppercase; }
+
+    /* ── LANG TOGGLE ── */
+    #lang-toggle {
+      position: fixed;
+      top: 14px;
+      left: 14px;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 13px;
+      background: rgba(10, 42, 47, 0.88);
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: var(--radius-btn);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      color: rgba(255,255,255,0.75);
+      font-family: var(--font-body);
+      font-size: 10px;
+      font-weight: 400;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background var(--transition), border-color var(--transition), color var(--transition);
+    }
+    #lang-toggle:hover {
+      background: rgba(255,255,255,0.1);
+      border-color: rgba(255,255,255,0.4);
+      color: var(--color-white);
+    }
+    #lang-toggle:focus-visible { outline: 2px solid var(--color-white); outline-offset: 2px; }
+    #lang-toggle svg { width: 12px; height: 12px; flex-shrink: 0; opacity: 0.6; }
+    #lang-toggle .current-lang {
+      font-weight: 500; color: rgba(255,255,255,0.5);
+      font-size: 9px; letter-spacing: 0.15em;
+    }
+
+    /* ── LANG MODAL ── */
+    #lang-overlay {
+      position: fixed; inset: 0;
+      background: rgba(8, 35, 38, 0.92);
+      backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 9999; opacity: 1;
+      transition: opacity 0.4s ease;
+    }
+    #lang-overlay.hidden { opacity: 0; pointer-events: none; }
+    #lang-modal {
+      background: var(--bg-primary);
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: 8px; padding: 44px 36px 36px;
+      text-align: center; max-width: 340px; width: calc(100% - 40px);
+      transform: translateY(0); transition: transform 0.4s ease;
+    }
+    #lang-overlay.hidden #lang-modal { transform: translateY(12px); }
+    #lang-modal .modal-eyebrow {
+      font-size: 10px; font-weight: 300; letter-spacing: 0.35em;
+      color: rgba(255,255,255,0.38); text-transform: uppercase; margin-bottom: 12px;
+    }
+    #lang-modal h2 {
+      font-size: 19px; font-weight: 300; letter-spacing: 0.1em;
+      color: var(--color-white); margin-bottom: 28px; line-height: 1.3;
+    }
+    .lang-btn-group { display: flex; flex-direction: column; gap: 9px; }
+    .lang-btn {
+      display: flex; align-items: center; justify-content: space-between;
+      width: 100%; padding: 13px 18px;
+      border-radius: var(--radius-btn);
+      border: 1px solid rgba(255,255,255,0.18);
+      background: transparent; color: var(--color-white);
+      font-family: var(--font-body); font-size: 11px; font-weight: 400;
+      letter-spacing: 0.22em; text-transform: uppercase; cursor: pointer;
+      transition: background 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
+    }
+    .lang-btn:hover { background: rgba(255,255,255,0.09); border-color: rgba(255,255,255,0.45); }
+    .lang-btn:active { transform: scale(0.98); }
+    .lang-btn:focus-visible { outline: 2px solid var(--color-white); outline-offset: 2px; }
+    .lang-btn .lang-native { font-weight: 300; font-size: 11px; color: rgba(255,255,255,0.4); }
   </style>
 </head>
 <body>
@@ -279,20 +357,48 @@
     Home
   </a>
 
+
+  <!-- ══ LANG TOGGLE ══ -->
+  <button id="lang-toggle" onclick="reopenLangModal()" aria-label="Change language">
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="8" cy="8" r="6.5"/>
+      <path d="M8 1.5C8 1.5 5.5 4 5.5 8s2.5 6.5 2.5 6.5"/>
+      <path d="M8 1.5C8 1.5 10.5 4 10.5 8s-2.5 6.5-2.5 6.5"/>
+      <line x1="1.5" y1="8" x2="14.5" y2="8"/>
+      <line x1="2" y1="5" x2="14" y2="5"/>
+      <line x1="2" y1="11" x2="14" y2="11"/>
+    </svg>
+    <span id="toggle-label">Language</span>
+    <span class="current-lang" id="toggle-lang-code">EN</span>
+  </button>
+
+  <!-- ══ LANGUAGE PICKER ══ -->
+  <div id="lang-overlay" role="dialog" aria-modal="true" aria-labelledby="lang-title" style="display:none">
+    <div id="lang-modal">
+      <p class="modal-eyebrow">Altaripa The Club</p>
+      <h2 id="lang-title">Select your language</h2>
+      <div class="lang-btn-group">
+        <button class="lang-btn" onclick="setLang('it')"><span>Italiano</span><span class="lang-native">IT</span></button>
+        <button class="lang-btn" onclick="setLang('en')"><span>English</span><span class="lang-native">EN</span></button>
+        <button class="lang-btn" onclick="setLang('de')"><span>Deutsch</span><span class="lang-native">DE</span></button>
+      </div>
+    </div>
+  </div>
+
   <!-- ══ HEADER ══ -->
   <header role="banner">
     <div class="logo-wrap">
       <img src="assets/logo.png" alt="Altaripa The Club" width="280" height="107" />
     </div>
-    <p class="tagline">Ristorante · Desenzano del Garda</p>
+    <p class="tagline" data-i18n="tagline">Restaurant · Desenzano del Garda</p>
   </header>
 
   <!-- ══ MAIN ══ -->
   <main id="main-content">
 
     <div class="section-title">
-      <h1>Il Ristorante</h1>
-      <p>Cucina di mare · Fronte lago</p>
+      <h1 data-i18n="pageTitle">The Restaurant</h1>
+      <p data-i18n="pageSubtitle">Seafood cuisine · Lakefront</p>
     </div>
 
     <!-- INFO STRIP -->
@@ -303,8 +409,8 @@
           <circle cx="8" cy="7" r="4"/><path d="M8 1v2M8 11v1M2 7h2M10 7h4"/><path d="M3 14c0-2.8 2.2-4 5-4s5 1.2 5 4"/>
         </svg>
         <div class="info-item-text">
-          <span class="info-label">Cucina</span>
-          <span class="info-value">Cucina di mare · Crudi · Sashimi · Tartare<br/>Aperitivo fronte lago dal Mercoledì alla Domenica</span>
+          <span class="info-label" data-i18n="infoKitchenLabel">Cuisine</span>
+          <span class="info-value" data-i18n="infoKitchenValue">Seafood · Crudi · Sashimi · Tartare<br/>Lakefront aperitivo from Wednesday to Sunday</span>
         </div>
       </div>
 
@@ -313,8 +419,8 @@
           <rect x="2" y="3" width="12" height="11" rx="1"/><path d="M5 2v2M11 2v2M2 7h12"/>
         </svg>
         <div class="info-item-text">
-          <span class="info-label">Orari Aperitivo</span>
-          <span class="info-value">Mercoledì — Domenica · dalle 18:00</span>
+          <span class="info-label" data-i18n="infoHoursLabel">Aperitivo Hours</span>
+          <span class="info-value" data-i18n="infoHoursValue">Wednesday — Sunday · from 18:00</span>
         </div>
       </div>
 
@@ -323,7 +429,7 @@
           <path d="M8 1C5.2 1 3 3.2 3 6c0 3.8 5 9 5 9s5-5.2 5-9c0-2.8-2.2-5-5-5z"/><circle cx="8" cy="6" r="1.5"/>
         </svg>
         <div class="info-item-text">
-          <span class="info-label">Indirizzo</span>
+          <span class="info-label" data-i18n="infoAddressLabel">Address</span>
           <span class="info-value">Viale F. Agello 152 · 25015 Desenzano del Garda</span>
         </div>
       </div>
@@ -336,22 +442,22 @@
         <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" xmlns="http://www.w3.org/2000/svg">
           <path d="M3 4h10M3 8h10M3 12h6"/>
         </svg>
-        Menù
+        <span data-i18n="btnMenu">Menu</span>
       </a>
-      <a href="https://wa.me/message/OP6XDBXXT7TGB1"
+      <a href="https://altaripa.plateform.app/welcome"
          class="btn btn-prenota"
          target="_blank" rel="noopener"
-         aria-label="Prenota un tavolo su WhatsApp">
+         aria-label="Prenota un tavolo">
         <svg viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
           <path d="M8 1C4.134 1 1 4.134 1 8c0 1.295.35 2.508.958 3.548L1 15l3.548-.958A6.963 6.963 0 0 0 8 15c3.866 0 7-3.134 7-7S11.866 1 8 1zm3.5 9.5c-.167.458-1.042.875-1.417.917-.375.042-.767.208-2.583-.583C5.833 10 4.917 8.333 4.833 8.208c-.083-.125-.667-.875-.667-1.667S4.667 5.5 4.875 5.25c.208-.25.417-.25.583-.25h.5c.167 0 .375.042.542.417l.708 1.583c.083.208.042.458-.083.583l-.292.333c-.083.125-.167.25-.042.5.125.25.583 1 1.25 1.625.833.75 1.5.958 1.708 1.042.208.083.333.042.458-.083l.417-.5c.167-.208.375-.167.625-.083l1.5.708c.25.125.417.208.417.458 0 .25-.167.708-.333 1.167z"/>
         </svg>
-        Prenota ora
+        <span data-i18n="btnBook">Book now</span>
       </a>
     </div>
 
     <div class="aperitivo-strip">
-      <strong>Aperitivo fronte lago</strong><br/>
-      dal Mercoledì alla Domenica · dalle 18:00
+      <strong data-i18n="aperitivoTitle">Lakefront aperitivo</strong><br/>
+      <span data-i18n="aperitivoSub">Wednesday to Sunday · from 18:00</span>
     </div>
 
   </main>
@@ -360,14 +466,124 @@
   <footer role="contentinfo">
     <div class="footer-sep" aria-hidden="true"></div>
     <p class="footer-contact">
-      Per informazioni:
-      <a href="https://wa.me/message/OP6XDBXXT7TGB1" aria-label="Contattaci su WhatsApp">347 332 6512</a>
+      <span id="footer-info-label" data-i18n="forInfo">For information:</span>
+      <a href="https://wa.me/message/TB4S4CPI33JKG1" aria-label="Contattaci su WhatsApp">+39 351 713 7058</a>
     </p>
     <p class="footer-info">
       Altaripa srl &nbsp;·&nbsp; Viale F. Agello 152 &nbsp;·&nbsp; 25015 Desenzano del Garda<br/>
       P.I. 04254570981
     </p>
   </footer>
+
+
+  <script>
+    'use strict';
+
+    var T = {
+      it: {
+        tagline:          'Ristorante · Desenzano del Garda',
+        pageTitle:        'Il Ristorante',
+        pageSubtitle:     'Cucina di mare · Fronte lago',
+        infoKitchenLabel: 'Cucina',
+        infoKitchenValue: 'Cucina di mare · Crudi · Sashimi · Tartare<br/>Aperitivo fronte lago dal Mercoledì alla Domenica',
+        infoHoursLabel:   'Orari Aperitivo',
+        infoHoursValue:   'Mercoledì — Domenica · dalle 18:00',
+        infoAddressLabel: 'Indirizzo',
+        btnMenu:          'Menù',
+        btnBook:          'Prenota ora',
+        aperitivoTitle:   'Aperitivo fronte lago',
+        aperitivoSub:     'dal Mercoledì alla Domenica · dalle 18:00',
+        forInfo:          'Per informazioni:',
+        toggleLabel:      'Lingua'
+      },
+      en: {
+        tagline:          'Restaurant · Desenzano del Garda',
+        pageTitle:        'The Restaurant',
+        pageSubtitle:     'Seafood cuisine · Lakefront',
+        infoKitchenLabel: 'Cuisine',
+        infoKitchenValue: 'Seafood · Crudi · Sashimi · Tartare<br/>Lakefront aperitivo from Wednesday to Sunday',
+        infoHoursLabel:   'Aperitivo Hours',
+        infoHoursValue:   'Wednesday — Sunday · from 18:00',
+        infoAddressLabel: 'Address',
+        btnMenu:          'Menu',
+        btnBook:          'Book now',
+        aperitivoTitle:   'Lakefront aperitivo',
+        aperitivoSub:     'Wednesday to Sunday · from 18:00',
+        forInfo:          'For information:',
+        toggleLabel:      'Language'
+      },
+      de: {
+        tagline:          'Restaurant · Desenzano del Garda',
+        pageTitle:        'Das Restaurant',
+        pageSubtitle:     'Meeresfrüchteküche · Seeblick',
+        infoKitchenLabel: 'Küche',
+        infoKitchenValue: 'Meeresfrüchte · Crudi · Sashimi · Tartare<br/>Aperitivo am See von Mittwoch bis Sonntag',
+        infoHoursLabel:   'Aperitivo-Zeiten',
+        infoHoursValue:   'Mittwoch — Sonntag · ab 18:00',
+        infoAddressLabel: 'Adresse',
+        btnMenu:          'Speisekarte',
+        btnBook:          'Jetzt reservieren',
+        aperitivoTitle:   'Aperitivo am See',
+        aperitivoSub:     'Mittwoch bis Sonntag · ab 18:00',
+        forInfo:          'Für Informationen:',
+        toggleLabel:      'Sprache'
+      }
+    };
+
+    function setLang(lang) {
+      if (!Object.prototype.hasOwnProperty.call(T, lang)) return;
+      var t = T[lang];
+
+      try { localStorage.setItem('altaripa_lang', lang); } catch(e) {}
+      document.documentElement.lang = lang;
+
+      /* Apply all data-i18n elements */
+      document.querySelectorAll('[data-i18n]').forEach(function(el) {
+        var key = el.getAttribute('data-i18n');
+        if (t[key] !== undefined) {
+          /* Use innerHTML for values that contain <br/> */
+          if (key === 'infoKitchenValue') {
+            el.innerHTML = t[key];
+          } else {
+            el.textContent = t[key];
+          }
+        }
+      });
+
+      /* Update toggle button */
+      var tl = document.getElementById('toggle-label');
+      var tc = document.getElementById('toggle-lang-code');
+      var codes = { it: 'IT', en: 'EN', de: 'DE' };
+      if (tl) tl.textContent = t.toggleLabel;
+      if (tc) tc.textContent = codes[lang];
+
+      /* Close modal */
+      var overlay = document.getElementById('lang-overlay');
+      if (overlay) {
+        overlay.classList.add('hidden');
+        setTimeout(function() { overlay.style.display = 'none'; }, 420);
+      }
+    }
+
+    function reopenLangModal() {
+      var overlay = document.getElementById('lang-overlay');
+      if (!overlay) return;
+      overlay.style.display = 'flex';
+      requestAnimationFrame(function() {
+        requestAnimationFrame(function() { overlay.classList.remove('hidden'); });
+      });
+    }
+
+    /* On load: restore saved language or default to EN */
+    (function() {
+      var lang = 'en';
+      try {
+        var saved = localStorage.getItem('altaripa_lang');
+        if (saved && Object.prototype.hasOwnProperty.call(T, saved)) lang = saved;
+      } catch(e) {}
+      setLang(lang);
+    }());
+  </script>
 
 </body>
 </html>

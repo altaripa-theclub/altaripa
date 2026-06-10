@@ -269,7 +269,84 @@
     /* ── FOOTER ── */
     footer { border-top: 1px solid var(--color-border); padding: 24px 20px; text-align: center; }
     .footer-sep { width: 1px; height: 22px; background: rgba(255,255,255,0.12); margin: 0 auto 18px; }
-    .footer-info { font-size: 9px; font-weight: 300; letter-spacing: 0.18em; color: rgba(255,255,255,0.35); line-height: 2; text-transform: uppercase; }
+    .footer-info { font-size: 9px; font-weight: 300; letter-spacing: 0.18em; color: rgba(255,255,255,0.5); line-height: 2; text-transform: uppercase; }
+
+    /* ── LANG TOGGLE ── */
+    #lang-toggle {
+      position: fixed; top: 14px; left: 14px; z-index: 1000;
+      display: flex; align-items: center; gap: 6px; padding: 7px 13px;
+      background: rgba(10, 42, 47, 0.88);
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: var(--radius-btn);
+      backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      color: rgba(255,255,255,0.75); font-family: var(--font-body);
+      font-size: 10px; font-weight: 400; letter-spacing: 0.22em;
+      text-transform: uppercase; cursor: pointer;
+      transition: background var(--transition), border-color var(--transition), color var(--transition);
+    }
+    #lang-toggle:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.4); color: var(--color-white); }
+    #lang-toggle:focus-visible { outline: 2px solid var(--color-white); outline-offset: 2px; }
+    #lang-toggle svg { width: 12px; height: 12px; flex-shrink: 0; opacity: 0.6; }
+    #lang-toggle .current-lang { font-weight: 500; color: rgba(255,255,255,0.5); font-size: 9px; letter-spacing: 0.15em; }
+
+    /* ── LANG MODAL ── */
+    #lang-overlay {
+      position: fixed; inset: 0; background: rgba(8, 35, 38, 0.92);
+      backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 9999; opacity: 1; transition: opacity 0.4s ease;
+    }
+    #lang-overlay.hidden { opacity: 0; pointer-events: none; }
+    #lang-modal {
+      background: var(--bg-primary); border: 1px solid rgba(255,255,255,0.18);
+      border-radius: 8px; padding: 44px 36px 36px; text-align: center;
+      max-width: 340px; width: calc(100% - 40px);
+      transform: translateY(0); transition: transform 0.4s ease;
+    }
+    #lang-overlay.hidden #lang-modal { transform: translateY(12px); }
+    #lang-modal .modal-eyebrow {
+      font-size: 10px; font-weight: 300; letter-spacing: 0.35em;
+      color: rgba(255,255,255,0.38); text-transform: uppercase; margin-bottom: 12px;
+    }
+    #lang-modal h2 { font-size: 19px; font-weight: 300; letter-spacing: 0.1em; color: var(--color-white); margin-bottom: 28px; }
+    .lang-btn-group { display: flex; flex-direction: column; gap: 9px; }
+    .lang-btn {
+      display: flex; align-items: center; justify-content: space-between;
+      width: 100%; padding: 13px 18px; border-radius: var(--radius-btn);
+      border: 1px solid rgba(255,255,255,0.18); background: transparent;
+      color: var(--color-white); font-family: var(--font-body); font-size: 11px;
+      font-weight: 400; letter-spacing: 0.22em; text-transform: uppercase; cursor: pointer;
+      transition: background 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
+    }
+    .lang-btn:hover { background: rgba(255,255,255,0.09); border-color: rgba(255,255,255,0.45); }
+    .lang-btn:active { transform: scale(0.98); }
+    .lang-btn .lang-native { font-weight: 300; font-size: 11px; color: rgba(255,255,255,0.4); }
+
+    #home-btn {
+      position: fixed;
+      top: 50px;
+      left: 14px;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 13px;
+      background: rgba(10, 42, 47, 0.88);
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: var(--radius-btn);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      color: rgba(255,255,255,0.75);
+      font-family: var(--font-body);
+      font-size: 10px;
+      font-weight: 400;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      text-decoration: none;
+      transition: background var(--transition), color var(--transition);
+    }
+    #home-btn:hover { background: rgba(255,255,255,0.1); color: var(--color-white); }
+    #home-btn svg { width: 12px; height: 12px; }
   </style>
 </head>
 <body>
@@ -282,27 +359,61 @@
     </svg>
     Ristorante
   </a>
+  <a href="index.html" id="home-btn" aria-label="Torna alla home">
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" xmlns="http://www.w3.org/2000/svg">
+      <path d="M10 3L5 8l5 5"/>
+    </svg>
+    Home
+  </a>
+
+  <!-- ══ LANG TOGGLE ══ -->
+  <button id="lang-toggle" onclick="reopenLangModal()" aria-label="Change language">
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="8" cy="8" r="6.5"/>
+      <path d="M8 1.5C8 1.5 5.5 4 5.5 8s2.5 6.5 2.5 6.5"/>
+      <path d="M8 1.5C8 1.5 10.5 4 10.5 8s-2.5 6.5-2.5 6.5"/>
+      <line x1="1.5" y1="8" x2="14.5" y2="8"/>
+      <line x1="2" y1="5" x2="14" y2="5"/>
+      <line x1="2" y1="11" x2="14" y2="11"/>
+    </svg>
+    <span id="toggle-label">Language</span>
+    <span class="current-lang" id="toggle-lang-code">EN</span>
+  </button>
+
+  <!-- ══ LANGUAGE PICKER ══ -->
+  <div id="lang-overlay" role="dialog" aria-modal="true" aria-labelledby="lang-title" style="display:none">
+    <div id="lang-modal">
+      <p class="modal-eyebrow">Altaripa The Club</p>
+      <h2 id="lang-title">Select your language</h2>
+      <div class="lang-btn-group">
+        <button class="lang-btn" onclick="setLang('it')"><span>Italiano</span><span class="lang-native">IT</span></button>
+        <button class="lang-btn" onclick="setLang('en')"><span>English</span><span class="lang-native">EN</span></button>
+        <button class="lang-btn" onclick="setLang('de')"><span>Deutsch</span><span class="lang-native">DE</span></button>
+      </div>
+    </div>
+  </div>
+
 
   <header role="banner">
     <div class="logo-wrap">
       <img src="assets/logo.png" alt="Altaripa The Club" width="240" height="92" />
     </div>
-    <p class="tagline">Menù Ristorante</p>
+    <p class="tagline" data-i18n="tagline">Restaurant Menu</p>
   </header>
 
   <main id="main-content">
 
     <div class="page-title">
-      <h1>Il Menù</h1>
-      <p>Cucina di mare · Lago di Garda</p>
+      <h1 data-i18n="pageTitle">The Menu</h1>
+      <p data-i18n="pageSubtitle">Seafood cuisine · Lake Garda</p>
     </div>
 
     <!-- ══ RAW DISHES ══ -->
     <div class="menu-section open">
       <button class="section-header" onclick="toggleSection(this)" aria-expanded="true">
         <div class="section-header-left">
-          <span class="section-name">Crudi</span>
-          <span class="section-sub">Raw Dishes · Rohe Gerichte</span>
+          <span class="section-name" data-i18n-it="Crudi" data-i18n-en="Crudi" data-i18n-de="Crudi">Crudi</span>
+          <span class="section-sub" data-i18n-it="Raw Dishes · Rohe Gerichte" data-i18n-en="Raw Dishes" data-i18n-de="Rohe Gerichte">Raw Dishes · Rohe Gerichte</span>
         </div>
         <svg class="chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" xmlns="http://www.w3.org/2000/svg"><path d="M4 6l4 4 4-4"/></svg>
       </button>
@@ -349,8 +460,8 @@
     <div class="menu-section">
       <button class="section-header" onclick="toggleSection(this)" aria-expanded="false">
         <div class="section-header-left">
-          <span class="section-name">Sashimi · Carpacci</span>
-          <span class="section-sub">Sashimi &amp; Carpaccio</span>
+          <span class="section-name" data-i18n-it="Sashimi · Carpacci" data-i18n-en="Sashimi · Carpacci" data-i18n-de="Sashimi · Carpacci">Sashimi · Carpacci</span>
+          <span class="section-sub" data-i18n-it="Sashimi &amp; Carpaccio" data-i18n-en="Sashimi &amp; Carpaccio" data-i18n-de="Sashimi &amp; Carpaccio">Sashimi &amp; Carpaccio</span>
         </div>
         <svg class="chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" xmlns="http://www.w3.org/2000/svg"><path d="M4 6l4 4 4-4"/></svg>
       </button>
@@ -412,8 +523,8 @@
     <div class="menu-section">
       <button class="section-header" onclick="toggleSection(this)" aria-expanded="false">
         <div class="section-header-left">
-          <span class="section-name">Tartare</span>
-          <span class="section-sub">Tartare</span>
+          <span class="section-name" data-i18n-it="Tartare" data-i18n-en="Tartare" data-i18n-de="Tartare">Tartare</span>
+          <span class="section-sub" data-i18n-it="Tartare" data-i18n-en="Tartare" data-i18n-de="Tartare">Tartare</span>
         </div>
         <svg class="chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" xmlns="http://www.w3.org/2000/svg"><path d="M4 6l4 4 4-4"/></svg>
       </button>
@@ -459,8 +570,8 @@
     <div class="menu-section">
       <button class="section-header" onclick="toggleSection(this)" aria-expanded="false">
         <div class="section-header-left">
-          <span class="section-name">Plateau</span>
-          <span class="section-sub">Platters · Platten</span>
+          <span class="section-name" data-i18n-it="Plateau" data-i18n-en="Plateau" data-i18n-de="Plateau">Plateau</span>
+          <span class="section-sub" data-i18n-it="Platters · Platten" data-i18n-en="Platters" data-i18n-de="Platten">Platters · Platten</span>
         </div>
         <svg class="chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" xmlns="http://www.w3.org/2000/svg"><path d="M4 6l4 4 4-4"/></svg>
       </button>
@@ -480,8 +591,8 @@
     <div class="menu-section">
       <button class="section-header" onclick="toggleSection(this)" aria-expanded="false">
         <div class="section-header-left">
-          <span class="section-name">Caviale</span>
-          <span class="section-sub">Caviar · Kaviar</span>
+          <span class="section-name" data-i18n-it="Caviale" data-i18n-en="Caviale" data-i18n-de="Caviale">Caviale</span>
+          <span class="section-sub" data-i18n-it="Caviar · Kaviar" data-i18n-en="Caviar" data-i18n-de="Kaviar">Caviar · Kaviar</span>
         </div>
         <svg class="chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" xmlns="http://www.w3.org/2000/svg"><path d="M4 6l4 4 4-4"/></svg>
       </button>
@@ -507,8 +618,8 @@
     <div class="menu-section">
       <button class="section-header" onclick="toggleSection(this)" aria-expanded="false">
         <div class="section-header-left">
-          <span class="section-name">Antipasti</span>
-          <span class="section-sub">Starters · Vorspeisen</span>
+          <span class="section-name" data-i18n-it="Antipasti" data-i18n-en="Antipasti" data-i18n-de="Antipasti">Antipasti</span>
+          <span class="section-sub" data-i18n-it="Starters · Vorspeisen" data-i18n-en="Starters" data-i18n-de="Vorspeisen">Starters · Vorspeisen</span>
         </div>
         <svg class="chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" xmlns="http://www.w3.org/2000/svg"><path d="M4 6l4 4 4-4"/></svg>
       </button>
@@ -576,8 +687,8 @@
     <div class="menu-section">
       <button class="section-header" onclick="toggleSection(this)" aria-expanded="false">
         <div class="section-header-left">
-          <span class="section-name">Primi</span>
-          <span class="section-sub">First Courses · Erste Gänge</span>
+          <span class="section-name" data-i18n-it="Primi" data-i18n-en="Primi" data-i18n-de="Primi">Primi</span>
+          <span class="section-sub" data-i18n-it="First Courses · Erste Gänge" data-i18n-en="First Courses" data-i18n-de="Erste Gänge">First Courses · Erste Gänge</span>
         </div>
         <svg class="chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" xmlns="http://www.w3.org/2000/svg"><path d="M4 6l4 4 4-4"/></svg>
       </button>
@@ -656,8 +767,8 @@
     <div class="menu-section">
       <button class="section-header" onclick="toggleSection(this)" aria-expanded="false">
         <div class="section-header-left">
-          <span class="section-name">Secondi</span>
-          <span class="section-sub">Main Courses · Hauptgänge</span>
+          <span class="section-name" data-i18n-it="Secondi" data-i18n-en="Secondi" data-i18n-de="Secondi">Secondi</span>
+          <span class="section-sub" data-i18n-it="Main Courses · Hauptgänge" data-i18n-en="Main Courses" data-i18n-de="Hauptgänge">Main Courses · Hauptgänge</span>
         </div>
         <svg class="chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" xmlns="http://www.w3.org/2000/svg"><path d="M4 6l4 4 4-4"/></svg>
       </button>
@@ -736,8 +847,8 @@
     <div class="menu-section">
       <button class="section-header" onclick="toggleSection(this)" aria-expanded="false">
         <div class="section-header-left">
-          <span class="section-name">Contorni</span>
-          <span class="section-sub">Side Dishes · Beilagen</span>
+          <span class="section-name" data-i18n-it="Contorni" data-i18n-en="Contorni" data-i18n-de="Contorni">Contorni</span>
+          <span class="section-sub" data-i18n-it="Side Dishes · Beilagen" data-i18n-en="Side Dishes" data-i18n-de="Beilagen">Side Dishes · Beilagen</span>
         </div>
         <svg class="chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" xmlns="http://www.w3.org/2000/svg"><path d="M4 6l4 4 4-4"/></svg>
       </button>
@@ -784,8 +895,8 @@
     <div class="menu-section">
       <button class="section-header" onclick="toggleSection(this)" aria-expanded="false">
         <div class="section-header-left">
-          <span class="section-name">Dessert</span>
-          <span class="section-sub">Desserts · Nachtisch</span>
+          <span class="section-name" data-i18n-it="Dessert" data-i18n-en="Dessert" data-i18n-de="Dessert">Dessert</span>
+          <span class="section-sub" data-i18n-it="Desserts · Nachtisch" data-i18n-en="Desserts" data-i18n-de="Nachtisch">Desserts · Nachtisch</span>
         </div>
         <svg class="chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" xmlns="http://www.w3.org/2000/svg"><path d="M4 6l4 4 4-4"/></svg>
       </button>
@@ -852,52 +963,52 @@
     <!-- COPERTO + ACQUA -->
     <div class="menu-section" style="margin-bottom:0">
       <div class="coperto-row">
-        <span>Coperto · Cover charge · Gedeck</span>
+        <span data-i18n="coperto">Cover charge · Gedeck</span>
         <span>5 €</span>
       </div>
       <div class="coperto-row" style="border-top: 1px solid rgba(255,255,255,0.07)">
-        <span>Acqua Lurisia · Water · Wasser</span>
+        <span data-i18n="acqua">Water · Wasser</span>
         <span>4 €</span>
       </div>
     </div>
 
     <!-- ALLERGENI -->
     <div class="allergeni-section">
-      <p class="allergeni-title">Informazioni Allergeni</p>
-      <p class="allergeni-note">
+      <p class="allergeni-title" data-i18n="allergeniTitle">Allergen Information</p>
+      <p class="allergeni-note" data-i18n="allergeniNote">
         Informazione alla clientela sugli allergeni alimentari (Reg. UE 1169/2011).
         Le informazioni sulla presenza di sostanze o prodotti che provocano allergie o intolleranze
         sono disponibili rivolgendosi al personale di servizio.<br/>
         Possibili tracce di glutine, latte, frutta secca, arachidi e sedano in tutte le portate.
       </p>
       <div class="allergeni-grid">
-        <span class="allergene"><strong>1</strong> Glutine</span>
-        <span class="allergene"><strong>2</strong> Crostacei</span>
-        <span class="allergene"><strong>3</strong> Uova</span>
-        <span class="allergene"><strong>4</strong> Pesce</span>
-        <span class="allergene"><strong>5</strong> Arachidi</span>
-        <span class="allergene"><strong>6</strong> Soia</span>
-        <span class="allergene"><strong>7</strong> Latte</span>
-        <span class="allergene"><strong>8</strong> Frutta a guscio</span>
-        <span class="allergene"><strong>9</strong> Sedano</span>
-        <span class="allergene"><strong>10</strong> Senape</span>
-        <span class="allergene"><strong>11</strong> Sesamo</span>
-        <span class="allergene"><strong>12</strong> Solfiti</span>
-        <span class="allergene"><strong>13</strong> Lupini</span>
-        <span class="allergene"><strong>14</strong> Molluschi</span>
+        <span class="allergene"><strong>1</strong> <span data-i18n-it="Glutine" data-i18n-en="Gluten" data-i18n-de="Gluten">Glutine</span></span>
+        <span class="allergene"><strong>2</strong> <span data-i18n-it="Crostacei" data-i18n-en="Crustaceans" data-i18n-de="Krebstiere">Crostacei</span></span>
+        <span class="allergene"><strong>3</strong> <span data-i18n-it="Uova" data-i18n-en="Eggs" data-i18n-de="Eier">Uova</span></span>
+        <span class="allergene"><strong>4</strong> <span data-i18n-it="Pesce" data-i18n-en="Fish" data-i18n-de="Fisch">Pesce</span></span>
+        <span class="allergene"><strong>5</strong> <span data-i18n-it="Arachidi" data-i18n-en="Peanuts" data-i18n-de="Erdnüsse">Arachidi</span></span>
+        <span class="allergene"><strong>6</strong> <span data-i18n-it="Soia" data-i18n-en="Soy" data-i18n-de="Soja">Soia</span></span>
+        <span class="allergene"><strong>7</strong> <span data-i18n-it="Latte" data-i18n-en="Milk" data-i18n-de="Milch">Latte</span></span>
+        <span class="allergene"><strong>8</strong> <span data-i18n-it="Frutta a guscio" data-i18n-en="Nuts" data-i18n-de="Schalenfrüchte">Frutta a guscio</span></span>
+        <span class="allergene"><strong>9</strong> <span data-i18n-it="Sedano" data-i18n-en="Celery" data-i18n-de="Sellerie">Sedano</span></span>
+        <span class="allergene"><strong>10</strong> <span data-i18n-it="Senape" data-i18n-en="Mustard" data-i18n-de="Senf">Senape</span></span>
+        <span class="allergene"><strong>11</strong> <span data-i18n-it="Sesamo" data-i18n-en="Sesame" data-i18n-de="Sesam">Sesamo</span></span>
+        <span class="allergene"><strong>12</strong> <span data-i18n-it="Solfiti" data-i18n-en="Sulphites" data-i18n-de="Sulfite">Solfiti</span></span>
+        <span class="allergene"><strong>13</strong> <span data-i18n-it="Lupini" data-i18n-en="Lupin" data-i18n-de="Lupinen">Lupini</span></span>
+        <span class="allergene"><strong>14</strong> <span data-i18n-it="Molluschi" data-i18n-en="Molluscs" data-i18n-de="Weichtiere">Molluschi</span></span>
       </div>
     </div>
 
     <!-- STICKY CTA -->
     <div class="sticky-cta">
-      <a href="https://wa.me/message/OP6XDBXXT7TGB1"
+      <a href="https://altaripa.plateform.app/welcome"
          class="btn-prenota"
          target="_blank" rel="noopener"
-         aria-label="Prenota il tuo tavolo su WhatsApp">
+         aria-label="Book your table">
         <svg viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
           <path d="M8 1C4.134 1 1 4.134 1 8c0 1.295.35 2.508.958 3.548L1 15l3.548-.958A6.963 6.963 0 0 0 8 15c3.866 0 7-3.134 7-7S11.866 1 8 1zm3.5 9.5c-.167.458-1.042.875-1.417.917-.375.042-.767.208-2.583-.583C5.833 10 4.917 8.333 4.833 8.208c-.083-.125-.667-.875-.667-1.667S4.667 5.5 4.875 5.25c.208-.25.417-.25.583-.25h.5c.167 0 .375.042.542.417l.708 1.583c.083.208.042.458-.083.583l-.292.333c-.083.125-.167.25-.042.5.125.25.583 1 1.25 1.625.833.75 1.5.958 1.708 1.042.208.083.333.042.458-.083l.417-.5c.167-.208.375-.167.625-.083l1.5.708c.25.125.417.208.417.458 0 .25-.167.708-.333 1.167z"/>
         </svg>
-        Prenota il tuo tavolo
+        <span data-i18n="btnBook">Reserve your table</span>
       </a>
     </div>
 
@@ -911,14 +1022,124 @@
     </p>
   </footer>
 
+
+
+
   <script>
     'use strict';
+
+    var T = {
+      it: {
+        tagline:       'Menù Ristorante',
+        pageTitle:     'Il Menù',
+        pageSubtitle:  'Cucina di mare · Lago di Garda',
+        btnBook:       'Prenota il tuo tavolo',
+        allergeniTitle:'Informazioni Allergeni',
+        allergeniNote: 'Informazione alla clientela sugli allergeni alimentari (Reg. UE 1169/2011). Le informazioni sulla presenza di sostanze o prodotti che provocano allergie o intolleranze sono disponibili rivolgendosi al personale di servizio. Possibili tracce di glutine, latte, frutta secca, arachidi e sedano in tutte le portate.',
+        coperto:       'Coperto',
+        acqua:         'Acqua Lurisia',
+        toggleLabel:   'Lingua'
+      },
+      en: {
+        tagline:       'Restaurant Menu',
+        pageTitle:     'The Menu',
+        pageSubtitle:  'Seafood cuisine · Lake Garda',
+        btnBook:       'Reserve your table',
+        allergeniTitle:'Allergen Information',
+        allergeniNote: 'Customer information on food allergens (EU Reg. 1169/2011). Information on the presence of substances or products causing allergies or intolerances is available by asking the service staff. Possible traces of gluten, milk, nuts, peanuts and celery in all dishes.',
+        coperto:       'Cover charge',
+        acqua:         'Still water',
+        toggleLabel:   'Language'
+      },
+      de: {
+        tagline:       'Speisekarte',
+        pageTitle:     'Die Speisekarte',
+        pageSubtitle:  'Meeresfrüchteküche · Gardasee',
+        btnBook:       'Tisch reservieren',
+        allergeniTitle:'Allergeninformationen',
+        allergeniNote: 'Kundeninformation zu Lebensmittelallergenen (EU-Verordnung 1169/2011). Informationen über das Vorhandensein von Stoffen oder Produkten, die Allergien oder Unverträglichkeiten auslösen, erhalten Sie beim Servicepersonal. Mögliche Spuren von Gluten, Milch, Nüssen, Erdnüssen und Sellerie in allen Gerichten.',
+        coperto:       'Gedeck',
+        acqua:         'Mineralwasser',
+        toggleLabel:   'Sprache'
+      }
+    };
+
+    function setLang(lang) {
+      if (!Object.prototype.hasOwnProperty.call(T, lang)) return;
+      var t = T[lang];
+
+      /* Save + set html lang attribute */
+      try { localStorage.setItem('altaripa_lang', lang); } catch(e) {}
+      document.documentElement.lang = lang;
+
+      /* 1. All elements with data-i18n key → look up in T */
+      document.querySelectorAll('[data-i18n]').forEach(function(el) {
+        var key = el.getAttribute('data-i18n');
+        if (t[key] !== undefined) el.textContent = t[key];
+      });
+
+      /* 2. All elements with data-i18n-it/en/de → pick the right lang attr */
+      document.querySelectorAll('[data-i18n-' + lang + ']').forEach(function(el) {
+        el.textContent = el.getAttribute('data-i18n-' + lang);
+      });
+
+      /* 3. Dish translations: show only the line matching selected lang */
+      document.querySelectorAll('.dish-translations').forEach(function(div) {
+        var ems = div.querySelectorAll('em');
+        if (lang === 'it') {
+          ems.forEach(function(em) { em.style.display = 'none'; });
+        } else if (lang === 'en') {
+          ems.forEach(function(em, i) {
+            em.style.display = (ems.length === 1 || i === 0) ? 'block' : 'none';
+          });
+        } else if (lang === 'de') {
+          ems.forEach(function(em, i) {
+            em.style.display = (ems.length === 1 ? false : i === 1) ? 'block' : 'none';
+          });
+        }
+      });
+
+      /* 4. Toggle button label */
+      var codes = { it: 'IT', en: 'EN', de: 'DE' };
+      var tl = document.getElementById('toggle-label');
+      var tc = document.getElementById('toggle-lang-code');
+      if (tl) tl.textContent = t.toggleLabel;
+      if (tc) tc.textContent = codes[lang];
+
+      /* 5. Close modal */
+      var overlay = document.getElementById('lang-overlay');
+      if (overlay) {
+        overlay.classList.add('hidden');
+        setTimeout(function() { overlay.style.display = 'none'; }, 420);
+      }
+    }
+
+    function reopenLangModal() {
+      var overlay = document.getElementById('lang-overlay');
+      if (!overlay) return;
+      overlay.style.display = 'flex';
+      requestAnimationFrame(function() {
+        requestAnimationFrame(function() { overlay.classList.remove('hidden'); });
+      });
+    }
+
+    /* Accordion */
     function toggleSection(btn) {
       var section = btn.closest('.menu-section');
       var isOpen  = section.classList.contains('open');
       section.classList.toggle('open', !isOpen);
       btn.setAttribute('aria-expanded', String(!isOpen));
     }
+
+    /* On load: restore saved lang or default EN */
+    (function() {
+      var lang = 'en';
+      try {
+        var saved = localStorage.getItem('altaripa_lang');
+        if (saved && Object.prototype.hasOwnProperty.call(T, saved)) lang = saved;
+      } catch(e) {}
+      setLang(lang);
+    }());
   </script>
 
 </body>
